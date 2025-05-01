@@ -40,7 +40,7 @@ class AuthController extends Controller
             'success' => true,
             'message' => 'Sukses login.',
             'data' => [
-                    'access_login' => $token,
+                    'access_token' => $token,
                     'token_type' => 'Bearer',
                     'user' => $user
                 ]

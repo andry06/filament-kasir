@@ -6,11 +6,13 @@ use Filament\Forms;
 use Filament\Tables;
 use App\Models\Product;
 use Filament\Forms\Set;
+use App\Models\Category;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use App\Filament\Clusters\Products;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\Actions\Action;
 use App\Filament\Resources\ProductResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\ProductResource\RelationManagers;
@@ -37,7 +39,29 @@ class ProductResource extends Resource
                     ->live(onBlur:true)
                     ->maxLength(255),
                 Forms\Components\Select::make('category_id')
-                    ->relationship('category', 'name'),
+                    ->relationship('category', 'name')
+                    ->createOptionAction(
+                        fn (Action $action) => $action->modalWidth('sm')
+                            ->modalHeading('Tambah Kategori')
+                            ->modalButton('Tambah'),
+                    )
+                    ->createOptionForm([
+                        Forms\Components\TextInput::make('name')
+                            ->afterStateUpdated(function (Set $set, $state) {
+                                $set('slug', Category::generateUniqueSlug($state));
+                            })
+                            ->required()
+                            ->live(onBlur: true)
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('slug')
+                            ->required()
+                            ->readOnly()
+                            ->maxLength(255),
+                        Forms\Components\Textarea::make('description')
+                            ->columnSpanFull(),
+                        Forms\Components\Toggle::make('is_active')
+                            ->required(),
+                        ]),
                 Forms\Components\TextInput::make('slug')
                     ->required()
                     ->readOnly()
@@ -53,6 +77,7 @@ class ProductResource extends Resource
                 Forms\Components\Toggle::make('is_active')
                     ->required(),
                 Forms\Components\FileUpload::make('image')
+                    // ->directory('products')
                     ->image(),
                 Forms\Components\TextInput::make('barcode')
                     ->maxLength(255),
@@ -65,6 +90,9 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('index')
+                    ->label('No')
+                    ->rowIndex(),
                 Tables\Columns\ImageColumn::make('image'),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
@@ -123,4 +151,5 @@ class ProductResource extends Resource
             'edit' => Pages\EditProduct::route('/{record}/edit'),
         ];
     }
+
 }

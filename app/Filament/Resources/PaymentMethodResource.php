@@ -27,6 +27,7 @@ class PaymentMethodResource extends Resource
     {
         return $form
             ->schema([
+
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
@@ -41,6 +42,9 @@ class PaymentMethodResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('index')
+                    ->label('No')
+                    ->rowIndex(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('image'),

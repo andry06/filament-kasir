@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\CategoryResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\CategoryResource\RelationManagers;
+use App\Filament\Resources\CategoryResource\RelationManagers\ProductsRelationManager;
 
 class CategoryResource extends Resource
 {
@@ -50,6 +51,9 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('index')
+                    ->label('No')
+                    ->rowIndex(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
@@ -82,12 +86,12 @@ class CategoryResource extends Resource
             ]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
+    // public static function getRelations(): array
+    // {
+    //     return [
+    //         ProductsRelationManager::class
+    //     ];
+    // }
 
     public static function getPages(): array
     {

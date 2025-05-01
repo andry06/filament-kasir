@@ -122,6 +122,9 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('index')
+                    ->label('No')
+                    ->rowIndex(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('gender'),
@@ -264,5 +267,15 @@ class OrderResource extends Resource
 
         $exchangePaid = $paidAmount - $totalPrice;
         $set('change_amount', $exchangePaid);
+    }
+
+    public static function getLabel(): ?string
+    {
+        $locale = app()->getLocale();
+
+        if ($locale == 'id') {
+            return 'Pesanan';
+        }
+        return 'Orders';
     }
 }
